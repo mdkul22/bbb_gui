@@ -90,7 +90,7 @@ class MyPanel(wx.Panel):
         self.timerz.Start(1000)
 
         title = wx.StaticText(self, -1, 'Battery')
-        title.SetFont(wx.Font(24, wx.FONTFAMILY_MODERN, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        title.SetFont(wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
 
         self.labelOne = wx.StaticText(self, -1, 'Battery Voltage  :   ' + str(v))
@@ -289,7 +289,7 @@ class MyPanel1(wx.Panel):
 
         # buttons and labels
         title = wx.StaticText(self, -1, 'MPPT')
-        title.SetFont(wx.Font(24, wx.FONTFAMILY_MODERN, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        title.SetFont(wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
 
         self.labelOne = wx.StaticText(self, -1, 'MPPT current 1')
@@ -504,7 +504,7 @@ class MyPanel2(wx.Panel):
 
         # labels, buttons etc
         title = wx.StaticText(self, -1, 'Motor Controller')
-        title.SetFont(wx.Font(24, wx.FONTFAMILY_MODERN, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        title.SetFont(wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
 
         self.labelOne = wx.StaticText(self, -1, 'Motor Controller Current: ')
@@ -717,7 +717,7 @@ class MyPanel3(wx.Panel):
 
         # labels, buttons etc
         title = wx.StaticText(self, -1, 'General')
-        title.SetFont(wx.Font(24, wx.FONTFAMILY_MODERN, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        title.SetFont(wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
         self.labelOne = wx.StaticText(self, -1)
         self.labelOne.SetLabel('Car Speed : ')
