@@ -90,7 +90,7 @@ class MyPanel(wx.Panel):
         self.timerz.Start(1000)
 
         title = wx.StaticText(self, -1, 'Battery')
-        title.SetFont(wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        title.SetFont(wx.Font(24, wx.DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
 
         self.labelOne = wx.StaticText(self, -1, 'Battery Voltage  :   ' + str(v))
