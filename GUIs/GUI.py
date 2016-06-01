@@ -1,6 +1,8 @@
 import wx
 import random
 import time
+from threading import RLock
+from .randval import randgen
 v = 0.000
 i = 0.000
 i1 = 0.000
