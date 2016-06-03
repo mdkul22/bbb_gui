@@ -1,8 +1,10 @@
 import wx
+import sys
 import random
 import time
 from threading import RLock
-from .randval import randgen
+sys.path.append("..")
+from randval import randgen
 v = 0.000
 i = 0.000
 i1 = 0.000
@@ -27,10 +29,11 @@ class My_App(wx.App):
         return True
 
     def OnExit(self):
-        print ('Dying ...')
+        print('Dying ...')
 
 
 class MyFrame(wx.Frame):
+
     """"""
 
     def __init__(self, image, parent=None, id=-1,
@@ -66,11 +69,13 @@ class MyFrame(wx.Frame):
 
 
 class MyPanel(wx.Panel):
+
     """"""
     # --------BATTERY---------------------
+
     def __init__(self, parent, id=-1):
         """Constructor"""
-        wx.Panel.__init__(self, parent, id, size = (800, 480))
+        wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         # timers
         self.timer = wx.Timer(self)
@@ -95,18 +100,26 @@ class MyPanel(wx.Panel):
         title.SetFont(wx.Font(24, wx.DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
 
-        self.labelOne = wx.StaticText(self, -1, 'Battery Voltage  :   ' + str(v))
-        self.labelTwo = wx.StaticText(self, -1, 'Battery Current  :   ' + str(i))
+        self.labelOne = wx.StaticText(
+            self, -1, 'Battery Voltage  :   ' + str(v))
+        self.labelTwo = wx.StaticText(
+            self, -1, 'Battery Current  :   ' + str(i))
 
-        self.labelOne.SetFont(wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
-        self.labelTwo.SetFont(wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelOne.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelTwo.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
         self.labelOne.SetForegroundColour('white')
         self.labelTwo.SetForegroundColour('white')
 
-        self.wbutton0 = wx.Button(self, -1, '-            M P P T               -')
-        self.wbutton1 = wx.Button(self, -1, '-             B M S                -')
-        self.wbutton2 = wx.Button(self, -1, '-           M O T O R              -')
-        self.wbutton3 = wx.Button(self, -1, '-          G E N E R A L           -')
+        self.wbutton0 = wx.Button(
+            self, -1, '-            M P P T               -')
+        self.wbutton1 = wx.Button(
+            self, -1, '-             B M S                -')
+        self.wbutton2 = wx.Button(
+            self, -1, '-           M O T O R              -')
+        self.wbutton3 = wx.Button(
+            self, -1, '-          G E N E R A L           -')
 
         imageFile = "mppt.png"
         image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -185,11 +198,11 @@ class MyPanel(wx.Panel):
 
         self.SetSizer(topSizer)
         topSizer.Fit(self)
-        
+
         self.Raise()
         self.SetPosition((0, 0))
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
-    
+
     def OnEraseBackground(self, evt):
         dc = evt.GetDC()
 
@@ -199,7 +212,7 @@ class MyPanel(wx.Panel):
             dc.SetClippingRect(rect)
         dc.Clear()
         start_image1 = wx.Image("solarcar.jpg")
-        start_image1.Rescale(1310,800)
+        start_image1.Rescale(1310, 800)
         bmp = wx.BitmapFromImage(start_image1)
         dc.DrawBitmap(bmp, 0, 0)
 
@@ -209,15 +222,15 @@ class MyPanel(wx.Panel):
     def BatteryWarn(self, event):
         if (self.GetParent().panel0.IsShown()):
             self.wbutton1.SetBackgroundColour('white')
-            if v>75.90:
+            if v > 75.90:
                 self.labelOne.SetForegroundColour('red')
             else:
                 self.labelOne.SetForegroundColour('white')
-            if i>39.90:
+            if i > 39.90:
                 self.labelTwo.SetForegroundColour('red')
             else:
                 self.labelTwo.SetForegroundColour('white')
-        elif v>75.90 or i>39.90:
+        elif v > 75.90 or i > 39.90:
             self.wbutton1.SetBackgroundColour('red')
             self.GetParent().panel1.wbutton1.SetBackgroundColour('red')
             self.GetParent().panel2.wbutton1.SetBackgroundColour('red')
@@ -264,11 +277,13 @@ class MyPanel(wx.Panel):
 
 
 class MyPanel1(wx.Panel):
+
     """"""
     # ---------------MPPT----------------------
+
     def __init__(self, parent, id=-1):
         """Constructor"""
-        wx.Panel.__init__(self, parent, id, size = (800, 480))
+        wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         # timers
         self.timerx = wx.Timer(self)
@@ -291,21 +306,28 @@ class MyPanel1(wx.Panel):
 
         # buttons and labels
         title = wx.StaticText(self, -1, 'MPPT')
-        title.SetFont(wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        title.SetFont(
+            wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
 
         self.labelOne = wx.StaticText(self, -1, 'MPPT current 1')
         self.labelTwo = wx.StaticText(self, -1, 'MPPT current 2')
 
-        self.labelOne.SetFont(wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
-        self.labelTwo.SetFont(wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelOne.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelTwo.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
         self.labelOne.SetForegroundColour('white')
         self.labelTwo.SetForegroundColour('white')
 
-        self.wbutton0 = wx.Button(self, -1, '-            M P P T              -')
-        self.wbutton1 = wx.Button(self, -1, '-             B M S                -')
-        self.wbutton2 = wx.Button(self, -1, '-           M O T O R              -')
-        self.wbutton3 = wx.Button(self, -1, '-          G E N E R A L           -')
+        self.wbutton0 = wx.Button(
+            self, -1, '-            M P P T              -')
+        self.wbutton1 = wx.Button(
+            self, -1, '-             B M S                -')
+        self.wbutton2 = wx.Button(
+            self, -1, '-           M O T O R              -')
+        self.wbutton3 = wx.Button(
+            self, -1, '-          G E N E R A L           -')
 
         imageFile = "battery.png"
         image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -394,31 +416,30 @@ class MyPanel1(wx.Panel):
             dc.SetClippingRect(rect)
         dc.Clear()
         start_image1 = wx.Image("solarcar.jpg")
-        start_image1.Rescale(1310,800)
+        start_image1.Rescale(1310, 800)
         bmp = wx.BitmapFromImage(start_image1)
         dc.DrawBitmap(bmp, 0, 0)
 
     def MPPTWarn(self, event):
         if (self.GetParent().panel1.IsShown()):
             self.wbutton0.SetBackgroundColour('white')
-            if i1>9.90:
+            if i1 > 9.90:
                 self.labelOne.SetForegroundColour('red')
             else:
                 self.labelOne.SetForegroundColour('white')
-            if i2>8.90:
+            if i2 > 8.90:
                 self.labelTwo.SetForegroundColour('red')
             else:
                 self.labelTwo.SetForegroundColour('white')
-        elif i1>9.90 or i2>8.90:
+        elif i1 > 9.90 or i2 > 8.90:
             self.wbutton0.SetBackgroundColour('red')
             self.GetParent().panel0.wbutton0.SetBackgroundColour('red')
             self.GetParent().panel2.wbutton0.SetBackgroundColour('red')
             self.GetParent().panel3.wbutton0.SetBackgroundColour('red')
 
-
     def onOK(self, event):
         # Do something
-        print ('onOK handler')
+        print('onOK handler')
 
     def onCancel(self, event):
         self.closeProgram()
@@ -481,17 +502,18 @@ class MyPanel1(wx.Panel):
 
 
 class MyPanel2(wx.Panel):
+
     """"""
     # -------MOTOR CONTROLLER----------------------------
+
     def __init__(self, parent, id=-1):
         """Constructor"""
-        wx.Panel.__init__(self, parent, id, size = (800, 480))
+        wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         # timers
         self.timerx = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.MotorWarn, self.timerx)
         self.timerx.Start(100)
-
 
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.updateV, self.timer)
@@ -506,21 +528,28 @@ class MyPanel2(wx.Panel):
 
         # labels, buttons etc
         title = wx.StaticText(self, -1, 'Motor Controller')
-        title.SetFont(wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        title.SetFont(
+            wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
 
         self.labelOne = wx.StaticText(self, -1, 'Motor Controller Current: ')
         self.labelTwo = wx.StaticText(self, -1, 'Motor Voltage')
 
-        self.labelOne.SetFont(wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
-        self.labelTwo.SetFont(wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelOne.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelTwo.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
         self.labelOne.SetForegroundColour('white')
         self.labelTwo.SetForegroundColour('white')
 
-        self.wbutton0 = wx.Button(self, -1, '-            M P P T               -')
-        self.wbutton1 = wx.Button(self, -1, '-             B M S                -')
-        self.wbutton2 = wx.Button(self, -1, '-           M O T O R              -')
-        self.wbutton3 = wx.Button(self, -1, '-          G E N E R A L           -')
+        self.wbutton0 = wx.Button(
+            self, -1, '-            M P P T               -')
+        self.wbutton1 = wx.Button(
+            self, -1, '-             B M S                -')
+        self.wbutton2 = wx.Button(
+            self, -1, '-           M O T O R              -')
+        self.wbutton3 = wx.Button(
+            self, -1, '-          G E N E R A L           -')
 
         imageFile = "mppt.png"
         image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -597,12 +626,13 @@ class MyPanel2(wx.Panel):
 
         self.SetSizer(topSizer)
         topSizer.Fit(self)
-        
+
         self.Raise()
         self.SetPosition((0, 0))
         self.Hide()
-        
+
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
+
     def OnEraseBackground(self, evt):
         dc = evt.GetDC()
 
@@ -612,27 +642,26 @@ class MyPanel2(wx.Panel):
             dc.SetClippingRect(rect)
         dc.Clear()
         start_image1 = wx.Image("solarcar.jpg")
-        start_image1.Rescale(1310,800)
+        start_image1.Rescale(1310, 800)
         bmp = wx.BitmapFromImage(start_image1)
         dc.DrawBitmap(bmp, 0, 0)
 
     def MotorWarn(self, event):
         if (self.GetParent().panel2.IsShown()):
             self.wbutton2.SetBackgroundColour('white')
-            if Mv>71:
+            if Mv > 71:
                 self.labelOne.SetForegroundColour('red')
             else:
                 self.labelOne.SetForegroundColour('white')
-            if Im>200:
+            if Im > 200:
                 self.labelTwo.SetForegroundColour('red')
             else:
                 self.labelTwo.SetForegroundColour('white')
-        elif Mv>71 or Im>200:
+        elif Mv > 71 or Im > 200:
             self.wbutton2.SetBackgroundColour('red')
             self.GetParent().panel0.wbutton2.SetBackgroundColour('red')
             self.GetParent().panel1.wbutton2.SetBackgroundColour('red')
             self.GetParent().panel3.wbutton2.SetBackgroundColour('red')
-
 
     def closeProgram(self):
         self.Destroy()
@@ -692,11 +721,13 @@ class MyPanel2(wx.Panel):
 
 
 class MyPanel3(wx.Panel):
+
     """"""
     # ----------------------------------------------------------------------
+
     def __init__(self, parent, id=-1):
         """Constructor"""
-        wx.Panel.__init__(self, parent, id, size = (800, 480))
+        wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         # timers
         self.timer1 = wx.Timer(self)
@@ -719,7 +750,8 @@ class MyPanel3(wx.Panel):
 
         # labels, buttons etc
         title = wx.StaticText(self, -1, 'General')
-        title.SetFont(wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        title.SetFont(
+            wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
         self.labelOne = wx.StaticText(self, -1)
         self.labelOne.SetLabel('Car Speed : ')
@@ -728,24 +760,31 @@ class MyPanel3(wx.Panel):
         self.labelThree = wx.StaticText(self, -1)
         self.labelThree.SetLabel('Ambient Temperature:')
 
-        self.labelOne.SetFont(wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
-        self.labelTwo.SetFont(wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
-        self.labelThree.SetFont(wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelOne.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelTwo.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelThree.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
         self.labelOne.SetForegroundColour('white')
         self.labelTwo.SetForegroundColour('white')
         self.labelThree.SetForegroundColour('white')
 
-        self.wbutton0 = wx.Button(self, -1, '-            M P P T               -')
-        self.wbutton1 = wx.Button(self, -1, '-             B M S                -')
-        self.wbutton2 = wx.Button(self, -1, '-           M O T O R              -')
-        self.wbutton3 = wx.Button(self, -1, '-          G E N E R A L           -')
+        self.wbutton0 = wx.Button(
+            self, -1, '-            M P P T               -')
+        self.wbutton1 = wx.Button(
+            self, -1, '-             B M S                -')
+        self.wbutton2 = wx.Button(
+            self, -1, '-           M O T O R              -')
+        self.wbutton3 = wx.Button(
+            self, -1, '-          G E N E R A L           -')
 
         imageFile = "battery.png"
         image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         BatteryBtn = wx.BitmapButton(self, id=-1, bitmap=image1,
                                      pos=(10, 20),
-                                     size=(image1.GetWidth()+10,
-                                           image1.GetHeight()+10))
+                                     size=(image1.GetWidth() + 10,
+                                           image1.GetHeight() + 10))
 
         self.Bind(wx.EVT_BUTTON, self.OnBattery, BatteryBtn)
 
@@ -753,8 +792,8 @@ class MyPanel3(wx.Panel):
         image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         MPPTBtn = wx.BitmapButton(self, id=-1, bitmap=image1,
                                   pos=(10, 20),
-                                  size=(image1.GetWidth()+10,
-                                        image1.GetHeight()+10))
+                                  size=(image1.GetWidth() + 10,
+                                        image1.GetHeight() + 10))
         self.Bind(wx.EVT_BUTTON, self.OnMotor, MPPTBtn)
 
         imageFile = "motor.png"
@@ -834,7 +873,7 @@ class MyPanel3(wx.Panel):
             dc.SetClippingRect(rect)
         dc.Clear()
         start_image1 = wx.Image("solarcar.jpg")
-        start_image1.Rescale(1310,800)
+        start_image1.Rescale(1310, 800)
         bmp = wx.BitmapFromImage(start_image1)
         dc.DrawBitmap(bmp, 0, 0)
 
