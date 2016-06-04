@@ -1,21 +1,25 @@
 import wx
 import sys
 import random
-import time
-from threading import RLock
-sys.path.append("..")
-from randval import randgen
+from datetime import datetime
 
 __author__ = "Mayunk Kulkarni"
 
 
 class My_App(wx.App):
+    """"Additional arg added i.e the sensor_dict which will be pulled regularly"""
+
+    def __init__(self, sensor_dict):
+        self.imp_dict = sensor_dict
 
     def OnInit(self):
-        self.frame = MyFrame(None)
+        self.frame = MyFrame(None, self.imp_dict)
         self.frame.Show()
         self.SetTopWindow(self.frame)
         return True
+
+    def return_dict(self):
+        return self.imp_dict
 
     def OnExit(self):
         print('Dying ...')
@@ -25,24 +29,24 @@ class MyFrame(wx.Frame):
 
     """"""
 
-    def __init__(self, image, parent=None, id=-1,
-                 title='Generic Title', pos=wx.DefaultPosition, ):
+    def __init__(self, sensor_dict, image, parent=None, id=-1,
+                 title='Generic Title', pos=wx.DefaultPosition):
 
         size = (800, 480)
         wx.Frame.__init__(self, parent, id, 'GUI', pos, size)
 
         self.sizer_h = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.panel0 = MyPanel(self)
+        self.panel0 = MyPanel(self, sensor_dict)
         self.sizer_h.Add(self.panel0, 1, wx.EXPAND)
 
-        self.panel1 = MyPanel1(self)
+        self.panel1 = MyPanel1(self, sensor_dict)
         self.sizer_h.Add(self.panel1, 1, wx.EXPAND)
 
-        self.panel2 = MyPanel2(self)
+        self.panel2 = MyPanel2(self, sensor_dict)
         self.sizer_h.Add(self.panel2, 1, wx.EXPAND)
 
-        self.panel3 = MyPanel3(self)
+        self.panel3 = MyPanel3(self, sensor_dict)
         self.sizer_h.Add(self.panel3, 1, wx.EXPAND)
 
         self.SetSizer(self.sizer_h)
@@ -62,7 +66,7 @@ class MyPanel(wx.Panel):
     """"""
     # --------BATTERY---------------------
 
-    def __init__(self, parent, id=-1):
+    def __init__(self, imp_dict, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
@@ -74,6 +78,7 @@ class MyPanel(wx.Panel):
         self.timer1 = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.updateC, self.timer1)
         self.timer1.Start(1000)
+        self.imp_dict = imp_dict
         # timers for Warning
         self.timerx = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.BatteryWarn, self.timerx)
@@ -225,14 +230,13 @@ class MyPanel(wx.Panel):
             self.GetParent().panel2.wbutton1.SetBackgroundColour('red')
             self.GetParent().panel3.wbutton1.SetBackgroundColour('red')
 
-    def updateV(self, event):
+    def updatetq1(self, event):
         """"""
-        global v, t
-        v = random.uniform(75, 76)
-        txt = open('battery_voltage.txt', 'a')
-        txt.write(str(v) + "," + str(t) + "\n")
-        t += 1
-        self.labelOne.SetLabel('Battery Voltage : ' + str(v))
+        btq1 = self.imp_dict["btq1"][len(self.imp_dict["btq1"])-1]
+        t = (datetime.min, datetime.second)
+        txt = open('btq1.txt', 'a')
+        txt.write(str(btq1) + "," + str(t) + "\n")
+        self.labelOne.SetLabel('Temperature  : ' + str(v))
         self.Refresh()
 
     def updateC(self, event):
@@ -286,7 +290,7 @@ class MyPanel1(wx.Panel):
         self.timerz.Start(1000)
 
         self.timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.updateV, self.timer)
+        self.Bind(wx.EVT_TIMER, self.updatetq1, self.timer)
         self.timer.Start(1000)
 
         self.timer1 = wx.Timer(self)
@@ -436,7 +440,7 @@ class MyPanel1(wx.Panel):
     def closeProgram(self):
         self.Destroy()
 
-    def updateV(self, event):
+    def updatetq1(self, event):
         """"""
         global i1, t2
         i1 = random.uniform(9, 10)
@@ -505,7 +509,7 @@ class MyPanel2(wx.Panel):
         self.timerx.Start(100)
 
         self.timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.updateV, self.timer)
+        self.Bind(wx.EVT_TIMER, self.updatetq1, self.timer)
         self.timer.Start(1000)
 
         self.timerz = wx.Timer(self)
@@ -901,8 +905,8 @@ class MyPanel3(wx.Panel):
         self.GetParent().panel0.ShowYourself()
 
 
-def main():
-    app = My_App(redirect=False)
+def main(val):
+    app = My_App(redirect=False, sensor_dict=val)
     app.MainLoop()
 
 if __name__ == '__main__':
