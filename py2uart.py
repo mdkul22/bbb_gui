@@ -8,7 +8,9 @@ from randval import randgen
 
 class Logger():
 
-    """this class works as a data handler """
+    """this class works as a data handler, inputs csv files, also
+       acts as a warner by checking values and provides proper data
+       the GUI"""
 
     def __init__(self):
         self.sensor_val = {

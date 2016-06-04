@@ -5,18 +5,7 @@ import time
 from threading import RLock
 sys.path.append("..")
 from randval import randgen
-v = 0.000
-i = 0.000
-i1 = 0.000
-i2 = 0.000
-Mv = 0.000
-Im = 0.0
-t = 0
-t1 = 0
-t2 = 0
-t3 = 0
-t4 = 0
-t5 = 0
+
 __author__ = "Mayunk Kulkarni"
 
 
