@@ -95,9 +95,19 @@ class MyPanel(wx.Panel):
         title.SetForegroundColour('white')
 
         self.labelOne = wx.StaticText(
-            self, -1, 'Battery Voltage  :   ' + str(v))
+            self, -1, 'Battery (NE) Temperature  :   ' + str(self.btq1))
         self.labelTwo = wx.StaticText(
-            self, -1, 'Battery Current  :   ' + str(i))
+            self, -1, 'Battery (NW) Temperature  :   ' + str(self.btq2))
+        self.labelThree = wx.StaticText(
+            self, -1, 'Battery (SE) Temperature  :   ' + str(self.btq3))
+        self.labelFour = wx.StaticText(
+            self, -1, 'Battery (SW) Temperature  :   ' + str(self.btq4))
+        self.labelFive = wx.StaticText(
+            self, -1, 'Max. Discharge Current  :   ' + str(self.maxdisc))
+        self.labelSix = wx.StaticText(
+            self, -1, 'Min. Discharge Current  :   ' + str(self.mindisc))
+        self.labelSeven = wx.StaticText(
+            self, -1, 'Battery (SW) Temperature  :   ' + str(self.maxc))
 
         self.labelOne.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
@@ -196,6 +206,14 @@ class MyPanel(wx.Panel):
         self.Raise()
         self.SetPosition((0, 0))
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
+        # value declarations
+        self.btq1 = 0
+        self.btq2 = 0
+        self.btq3 = 0
+        self.btq4 = 0
+        self.maxdisc = 0
+        self.mindisc = 0
+        self.maxc = 0
 
     def OnEraseBackground(self, evt):
         dc = evt.GetDC()
@@ -231,22 +249,66 @@ class MyPanel(wx.Panel):
             self.GetParent().panel3.wbutton1.SetBackgroundColour('red')
 
     def updatetq1(self, event):
-        """"""
-        btq1 = self.imp_dict["btq1"][len(self.imp_dict["btq1"])-1]
-        t = (datetime.min, datetime.second)
+        """battery NE quadrant temperature"""
+        self.btq1 = self.imp_dict["btq1"][len(self.imp_dict["btq1"])-1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('btq1.txt', 'a')
-        txt.write(str(btq1) + "," + str(t) + "\n")
-        self.labelOne.SetLabel('Temperature  : ' + str(v))
+        txt.write(str(self.btq1) + "," + t + "\n")
+        self.labelOne.SetLabel('Temperature  : ' + str(self.btq1))
         self.Refresh()
 
-    def updateC(self, event):
-        """"""
-        global i, t1
-        i = random.uniform(39, 40)
+    def updatetq2(self, event):
+        """battery NW quadrant temperature"""
+        self.btq2 = self.imp_dict["btq2"][len(self.imp_dict["btq2"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('btq2.txt', 'a')
+        txt.write(str(self.btq2) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq2))
+        self.Refresh()
+
+    def updatetq3(self, event):
+        """battery SE quadrant temperature"""
+        self.btq3 = self.imp_dict["btq3"][len(self.imp_dict["btq3"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('btq3.txt', 'a')
+        txt.write(str(self.btq3) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq3))
+        self.Refresh()
+
+    def updatetq4(self, event):
+        """battery SW quadrant temperature"""
+        self.btq4 = self.imp_dict["btq4"][len(self.imp_dict["btq4"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('btq4.txt', 'a')
+        txt.write(str(self.btq4) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq4))
+        self.Refresh()
+
+    def updatemaxdc(self, event):
+        """max. discharge current"""
+        self.maxdisc = self.imp_dict["maxdiscC"][len(self.imp_dict["maxdiscC"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('maxdiscC.txt', 'a')
+        txt.write(str(self.maxdisc) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.maxdisc))
+        self.Refresh()
+
+    def updatemindc(self, event):
+        """min. discharge current"""
+        self.mindisc = self.imp_dict["mindiscC"][len(self.imp_dict["mindiscC"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('mindiscC.txt', 'a')
+        txt.write(str(self.mindisc) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.mindisc))
+        self.Refresh()
+
+    def updatemaxc(self, event):
+        """max current"""
+        self.maxc = self.imp_dict["btq3"][len(self.imp_dict["btq3"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('battery_current.txt', 'a')
-        txt.write(str(i) + "," + str(t1) + "\n")
-        t1 += 1
-        self.labelTwo.SetLabel('Battery Current : ' + str(i))
+        txt.write(str(self.maxc) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.maxc))
         self.Refresh()
 
     def ShowYourself(self):
