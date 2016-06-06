@@ -6,6 +6,7 @@ motor panel:
     left motor temperature (C)
     right motor temperature (C)
     motor controller temperature (C)
+~ changes for these are done :) includes adding labels to the sizers.
 
 MPPT panel:
     Solar Panels -> MPPT

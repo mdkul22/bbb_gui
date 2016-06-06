@@ -109,13 +109,30 @@ class MyPanel(wx.Panel):
         self.labelSeven = wx.StaticText(
             self, -1, 'Battery (SW) Temperature  :   ' + str(self.maxc))
 
+        # the label describers
         self.labelOne.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelOne.SetForegroundColour('white')
         self.labelTwo.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
-        self.labelOne.SetForegroundColour('white')
         self.labelTwo.SetForegroundColour('white')
+        self.labelThree.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelThree.SetForegroundColour('white')
+        self.labelFour.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelFour.SetForegroundColour('white')
+        self.labelFive.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelFive.SetForegroundColour('white')
+        self.labelSix.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelSix.SetForegroundColour('white')
+        self.labelSeven.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelSeven.SetForegroundColour('white')
 
+        # image button creation
         self.wbutton0 = wx.Button(
             self, -1, '-            M P P T               -')
         self.wbutton1 = wx.Button(
@@ -170,6 +187,11 @@ class MyPanel(wx.Panel):
         titleSizer = wx.BoxSizer(wx.HORIZONTAL)
         inputOneSizer = wx.BoxSizer(wx.HORIZONTAL)
         inputTwoSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputThreeSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputFourSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputFiveSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputSixSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputSevenSizer = wx.BoxSizer(wx.HORIZONTAL)
 
         # adding toolbar
         toolBtn.Add(MPPTBtn, 0, wx.ALL, 5)
@@ -190,6 +212,10 @@ class MyPanel(wx.Panel):
         titleSizer.Add(title, 0, wx.ALL, 5)
         inputOneSizer.Add(self.labelOne, 0, wx.ALL, 5)
         inputTwoSizer.Add(self.labelTwo, 0, wx.ALL, 5)
+        inputThreeSizer.Add(self.labelThree, 0, wx.ALL, 5)
+        inputFourSizer.Add(self.labelFour, 0, wx.ALL, 5)
+        inputFiveSizer.Add(self.labelFive, 0, wx.ALL, 5)
+        inputSixSizer.Add(self.labelSix, 0, wx.ALL, 5)
 
         topSizer.Add(toolBtn_h, 0, wx.ALL | wx.EXPAND | wx.CENTER, 5)
         topSizer.Add(warnSizer_h, 0, wx.ALL | wx.EXPAND | wx.CENTER, 5)
@@ -198,6 +224,11 @@ class MyPanel(wx.Panel):
         topSizer.Add(wx.StaticLine(self), 0, wx.ALL | wx.EXPAND, 5)
         topSizer.Add(inputOneSizer, 0, wx.ALL | wx.EXPAND, 5)
         topSizer.Add(inputTwoSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputThreeSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputFourSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputFiveSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputSixSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputSevenSizer, 0, wx.ALL | wx.EXPAND, 5)
         topSizer.Add(wx.StaticLine(self), 0, wx.ALL | wx.EXPAND, 5)
 
         self.SetSizer(topSizer)
@@ -232,17 +263,39 @@ class MyPanel(wx.Panel):
         self.Destroy()
 
     def BatteryWarn(self, event):
-        if (self.GetParent().panel0.IsShown()):
+        """warner for all seven values"""
+        if self.GetParent().panel0.IsShown():
             self.wbutton1.SetBackgroundColour('white')
-            if v > 75.90:
+            if self.btq1 > 65:
                 self.labelOne.SetForegroundColour('red')
             else:
                 self.labelOne.SetForegroundColour('white')
-            if i > 39.90:
+            if self.btq2 > 65:
                 self.labelTwo.SetForegroundColour('red')
             else:
                 self.labelTwo.SetForegroundColour('white')
-        elif v > 75.90 or i > 39.90:
+            if self.btq3 > 65:
+                self.labelThree.SetForegroundColour('red')
+            else:
+                self.labelThree.SetForegroundColour('white')
+            if self.btq4 > 65:
+                self.labelFour.SetForegroundColour('red')
+            else:
+                self.labelFour.SetForegroundColour('white')
+            if self.maxdisc > 600:
+                self.labelFive.SetForegroundColour('red')
+            else:
+                self.labelFive.SetForegroundColour('white')
+            if self.mindisc < 500:
+                self.labelSix.SetForegroundColour('red')
+            else:
+                self.labelSix.SetForegroundColour('white')
+            if self.maxc > 600:
+                self.labelTwo.SetForegroundColour('red')
+            else:
+                self.labelTwo.SetForegroundColour('white')
+
+        elif (self.btq1, self.btq2, self.btq2, self.btq4) > 65 or (self.maxc, self.maxdisc) > 600 or self.mindisc < 500:
             self.wbutton1.SetBackgroundColour('red')
             self.GetParent().panel1.wbutton1.SetBackgroundColour('red')
             self.GetParent().panel2.wbutton1.SetBackgroundColour('red')
