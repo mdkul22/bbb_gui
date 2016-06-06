@@ -63,8 +63,7 @@ class MyFrame(wx.Frame):
 
 class MyPanel(wx.Panel):
 
-    """"""
-    # --------BATTERY---------------------
+    """Battery panel class"""
 
     def __init__(self, imp_dict, parent, id=-1):
         """Constructor"""
@@ -238,6 +237,7 @@ class MyPanel(wx.Panel):
         self.SetPosition((0, 0))
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
         # value declarations
+        self.imp_dict = imp_dict
         self.btq1 = 0
         self.btq2 = 0
         self.btq3 = 0
@@ -307,7 +307,7 @@ class MyPanel(wx.Panel):
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('btq1.txt', 'a')
         txt.write(str(self.btq1) + "," + t + "\n")
-        self.labelOne.SetLabel('Temperature  : ' + str(self.btq1))
+        self.labelOne.SetLabel('Temperature  : ' + str(self.btq1) + ' C')
         self.Refresh()
 
     def updatetq2(self, event):
@@ -316,7 +316,7 @@ class MyPanel(wx.Panel):
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('btq2.txt', 'a')
         txt.write(str(self.btq2) + "," + t + "\n")
-        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq2))
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq2) + ' C')
         self.Refresh()
 
     def updatetq3(self, event):
@@ -325,7 +325,7 @@ class MyPanel(wx.Panel):
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('btq3.txt', 'a')
         txt.write(str(self.btq3) + "," + t + "\n")
-        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq3))
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq3) + ' C')
         self.Refresh()
 
     def updatetq4(self, event):
@@ -334,7 +334,7 @@ class MyPanel(wx.Panel):
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('btq4.txt', 'a')
         txt.write(str(self.btq4) + "," + t + "\n")
-        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq4))
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq4) + ' C')
         self.Refresh()
 
     def updatemaxdc(self, event):
@@ -343,7 +343,7 @@ class MyPanel(wx.Panel):
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('maxdiscC.txt', 'a')
         txt.write(str(self.maxdisc) + "," + t + "\n")
-        self.labelTwo.SetLabel('Battery Current : ' + str(self.maxdisc))
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.maxdisc) + ' A')
         self.Refresh()
 
     def updatemindc(self, event):
@@ -352,7 +352,7 @@ class MyPanel(wx.Panel):
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('mindiscC.txt', 'a')
         txt.write(str(self.mindisc) + "," + t + "\n")
-        self.labelTwo.SetLabel('Battery Current : ' + str(self.mindisc))
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.mindisc) + ' A')
         self.Refresh()
 
     def updatemaxc(self, event):
@@ -361,7 +361,7 @@ class MyPanel(wx.Panel):
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('battery_current.txt', 'a')
         txt.write(str(self.maxc) + "," + t + "\n")
-        self.labelTwo.SetLabel('Battery Current : ' + str(self.maxc))
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.maxc) + ' A')
         self.Refresh()
 
     def ShowYourself(self):
@@ -389,7 +389,7 @@ class MyPanel1(wx.Panel):
     """"""
     # ---------------MPPT----------------------
 
-    def __init__(self, parent, id=-1):
+    def __init__(self,imp_dict, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
