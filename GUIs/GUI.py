@@ -62,37 +62,52 @@ class MyFrame(wx.Frame):
 
 
 class MyPanel(wx.Panel):
-
     """Battery panel class"""
 
     def __init__(self, imp_dict, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
-        # timers
-        self.timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.updateV, self.timer)
-        self.timer.Start(1000)
-
-        self.timer1 = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.updateC, self.timer1)
-        self.timer1.Start(1000)
-        self.imp_dict = imp_dict
-        # timers for Warning
+        # warning timer
         self.timerx = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.BatteryWarn, self.timerx)
-        self.timerx.Start(100)
-
-        self.timery = wx.Timer(self)
-        self.timery.Start(1000)
-
-        self.timerz = wx.Timer(self)
-        self.timerz.Start(1000)
-
+        self.timerx.Start(10)
+        # label updaters
+        # 1
+        self.timer1 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.updatetq1, self.timer1)
+        self.timer1.Start(10)
+        # 2
+        self.timer2 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.updatetq2, self.timer2)
+        self.timer2.Start(10)
+        # 3
+        self.timer3 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.updatetq3, self.timer3)
+        self.timer3.Start(10)
+        # 4
+        self.timer4 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.updatetq4, self.timer4)
+        self.timer4.Start(10)
+        # 5
+        self.timer5 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.updatemaxdc, self.timer5)
+        self.timer5.Start(10)
+        # 6
+        self.timer6 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.updatemindc, self.timer6)
+        self.timer6.Start(10)
+        # 7
+        self.timer7 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.updatemaxc, self.timer7)
+        self.timer7.Start(10)
+        # dictionary of lists
+        self.imp_dict = imp_dict
+        # title
         title = wx.StaticText(self, -1, 'Battery')
         title.SetFont(wx.Font(24, wx.DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
-
+        # label declarations
         self.labelOne = wx.StaticText(
             self, -1, 'Battery (NE) Temperature  :   ' + str(self.btq1))
         self.labelTwo = wx.StaticText(
@@ -107,7 +122,6 @@ class MyPanel(wx.Panel):
             self, -1, 'Min. Discharge Current  :   ' + str(self.mindisc))
         self.labelSeven = wx.StaticText(
             self, -1, 'Battery (SW) Temperature  :   ' + str(self.maxc))
-
         # the label describers
         self.labelOne.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
@@ -385,47 +399,40 @@ class MyPanel(wx.Panel):
 
 
 class MyPanel1(wx.Panel):
-
-    """"""
-    # ---------------MPPT----------------------
+    """MPPT panel class"""
 
     def __init__(self,imp_dict, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
-        # timers
+        # warning timer
         self.timerx = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.MPPTWarn, self.timerx)
         self.timerx.Start(100)
-
-        self.timery = wx.Timer(self)
-        self.timery.Start(1000)
-
-        self.timerz = wx.Timer(self)
-        self.timerz.Start(1000)
-
+        # label updater
+        # 1
         self.timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.updatetq1, self.timer)
-        self.timer.Start(1000)
-
+        self.Bind(wx.EVT_TIMER, self.updatemppt2bat(), self.timer1)
+        self.timer1.Start(100)
+        # 2
         self.timer1 = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.updateC, self.timer1)
-        self.timer1.Start(1000)
-
+        self.Bind(wx.EVT_TIMER, self.updatesp2mppt(), self.timer2)
+        self.timer2.Start(100)
+        # dictionary of lists
+        self.imp_dict = imp_dict
         # buttons and labels
         title = wx.StaticText(self, -1, 'MPPT')
         title.SetFont(
             wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
-
-        self.labelOne = wx.StaticText(self, -1, 'MPPT current 1')
-        self.labelTwo = wx.StaticText(self, -1, 'MPPT current 2')
-
+        # label declarations
+        self.labelOne = wx.StaticText(self, -1, 'Panels to MPPT : ' + str(self.sp2mppt))
+        self.labelTwo = wx.StaticText(self, -1, 'MPPT to Battery : ' + str(self.mppt2bat))
+        # label describers
         self.labelOne.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
         self.labelTwo.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
-        self.labelOne.SetForegroundColour('white')
         self.labelTwo.SetForegroundColour('white')
 
         self.wbutton0 = wx.Button(
@@ -529,17 +536,18 @@ class MyPanel1(wx.Panel):
         dc.DrawBitmap(bmp, 0, 0)
 
     def MPPTWarn(self, event):
-        if (self.GetParent().panel1.IsShown()):
+        """warner for two values"""
+        if self.GetParent().panel1.IsShown():
             self.wbutton0.SetBackgroundColour('white')
-            if i1 > 9.90:
+            if self.sp2mppt > 9:
                 self.labelOne.SetForegroundColour('red')
             else:
                 self.labelOne.SetForegroundColour('white')
-            if i2 > 8.90:
+            if self.mppt2bat > 22:
                 self.labelTwo.SetForegroundColour('red')
             else:
                 self.labelTwo.SetForegroundColour('white')
-        elif i1 > 9.90 or i2 > 8.90:
+        elif self.mppt2bat > 9 or self.sp2mppt > 22:
             self.wbutton0.SetBackgroundColour('red')
             self.GetParent().panel0.wbutton0.SetBackgroundColour('red')
             self.GetParent().panel2.wbutton0.SetBackgroundColour('red')
@@ -555,38 +563,22 @@ class MyPanel1(wx.Panel):
     def closeProgram(self):
         self.Destroy()
 
-    def updatetq1(self, event):
-        """"""
-        global i1, t2
-        i1 = random.uniform(9, 10)
-        txt = open('mppt_current1.txt', 'a')
-        txt.write(str(i1) + "," + str(t2) + "\n")
-        t2 += 1
-        if i1 > 7:
-            self.labelOne.SetBackgroundColour('red')
-            self.labelOne.SetLabel('Current1 : ' + str(i1))
-
-        else:
-            self.labelOne.SetBackgroundColour('white')
-            self.labelOne.SetLabel('Current1 : ' + str(i1))
-
+    def updatemppt2bat(self, event):
+        """MPPT to battery"""
+        self.mppt2bat = self.imp_dict["mppt2bat"][len(self.imp_dict["mppt2bat"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('mppt2bat.txt', 'a')
+        txt.write(str(self.mppt2bat) + "," + t + "\n")
+        self.labelOne.SetLabel('MPPT to Battery  : ' + str(self.mppt2bat) + ' A')
         self.Refresh()
 
-    def updateC(self, event):
-        """"""
-        global i2, t3
-        i2 = random.uniform(8, 9)
-        txt = open('mppt_current2.txt', 'a')
-        txt.write(str(i2) + "," + str(t3) + "\n")
-        t3 += 1
-        if i2 > 5.5:
-            self.labelTwo.SetBackgroundColour('red')
-            self.labelTwo.SetLabel('Current2 : ' + str(i2))
-
-        else:
-            self.labelTwo.SetBackgroundColour('white')
-            self.labelTwo.SetLabel('Current2 : ' + str(i2))
-
+    def updatesp2mppt(self, event):
+        """Solar Panels to MPPT"""
+        self.sp2mppt = self.imp_dict["sp2mppt"][len(self.imp_dict["mppt2bat"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('sp2mppt.txt', 'a')
+        txt.write(str(self.sp2mppt) + "," + t + "\n")
+        self.labelOne.SetLabel('Panels to MPPT  : ' + str(self.sp2mppt) + ' A')
         self.Refresh()
 
     def ShowYourself(self):
