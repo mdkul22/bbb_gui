@@ -822,7 +822,7 @@ class MyPanel2(wx.Panel):
 
     def updatemtr(self, event):
         """"""
-        self.mtr = self.imp_dict["mtr"][len(self.imp_dict["btq2"]) - 1]
+        self.mtr = self.imp_dict["mtr"][len(self.imp_dict["mtr"]) - 1]
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('btq2.txt', 'a')
         txt.write(str(self.btq2) + "," + t + "\n")
