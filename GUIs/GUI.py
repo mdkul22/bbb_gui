@@ -62,7 +62,7 @@ class MyFrame(wx.Frame):
 
 
 class MyPanel(wx.Panel):
-    """Battery panel class"""
+    """Battery panel panel"""
 
     def __init__(self, imp_dict, parent, id=-1):
         """Constructor"""
@@ -644,16 +644,32 @@ class MyPanel2(wx.Panel):
             wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
         # label declarations
-        self.labelOne = wx.StaticText(self, -1, 'Motor Controller Current: ')
-        self.labelTwo = wx.StaticText(self, -1, 'Motor Voltage')
+        self.labelOne = wx.StaticText(self, -1, 'Motor Controller Temp. : ')
+        self.labelTwo = wx.StaticText(self, -1, 'Motor(L) Temp. : ')
+        self.labelThree = wx.StaticText(self, -1, 'Motor(R) Temp. : ')
+        self.labelFour = wx.StaticText(self, -1, 'MC to Motor(L) : ')
+        self.labelFive = wx.StaticText(self, -1, 'MC to Motor(R) : ')
+        self.labelSix = wx.StaticText(self, -1, 'MC to BMS : ')
         # label describers
         self.labelOne.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelOne.SetForegroundColour('white')
         self.labelTwo.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
-        self.labelOne.SetForegroundColour('white')
         self.labelTwo.SetForegroundColour('white')
-
+        self.labelThree.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelThree.SetForegroundColour('white')
+        self.labelFour.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelFour.SetForegroundColour('white')
+        self.labelFive.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelFive.SetForegroundColour('white')
+        self.labelSix.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelSix.SetForegroundColour('white')
+        # button creators
         self.wbutton0 = wx.Button(
             self, -1, '-            M P P T               -')
         self.wbutton1 = wx.Button(
@@ -662,7 +678,7 @@ class MyPanel2(wx.Panel):
             self, -1, '-           M O T O R              -')
         self.wbutton3 = wx.Button(
             self, -1, '-          G E N E R A L           -')
-
+        # image button declaration
         imageFile = "mppt.png"
         image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         MPPTBtn = wx.BitmapButton(self, id=-1, bitmap=image1,
@@ -698,7 +714,7 @@ class MyPanel2(wx.Panel):
                                        image1.GetHeight()+10))
 
         self.Bind(wx.EVT_BUTTON, self.OnGeneral, GenBtn)
-
+        # sizer generators
         topSizer = wx.BoxSizer(wx.VERTICAL)
         toolBtn = wx.BoxSizer(wx.HORIZONTAL)
         toolBtn_h = wx.BoxSizer(wx.VERTICAL)
@@ -707,6 +723,10 @@ class MyPanel2(wx.Panel):
         titleSizer = wx.BoxSizer(wx.HORIZONTAL)
         inputOneSizer = wx.BoxSizer(wx.HORIZONTAL)
         inputTwoSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputThreeSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputFourSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputFiveSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputSixSizer = wx.BoxSizer(wx.HORIZONTAL)
 
         toolBtn.Add(MPPTBtn, 0, wx.ALL, 5)
         toolBtn.Add(BatteryBtn, 0, wx.ALL, 5)
@@ -722,10 +742,12 @@ class MyPanel2(wx.Panel):
         warnSizer_h.Add(warnSizer, 0, wx.CENTER, 5)
 
         titleSizer.Add(title, 0, wx.ALL, 5)
-
         inputOneSizer.Add(self.labelOne, 0, wx.ALL, 5)
-
         inputTwoSizer.Add(self.labelTwo, 0, wx.ALL, 5)
+        inputThreeSizer.Add(self.labelThree, 0, wx.ALL, 5)
+        inputFourSizer.Add(self.labelFour, 0, wx.ALL, 5)
+        inputFiveSizer.Add(self.labelFive, 0, wx.ALL, 5)
+        inputSixSizer.Add(self.labelSix, 0, wx.ALL, 5)
 
         topSizer.Add(toolBtn_h, 0, wx.ALL | wx.EXPAND | wx.CENTER, 5)
         topSizer.Add(warnSizer_h, 0, wx.ALL | wx.EXPAND | wx.CENTER, 5)
@@ -734,6 +756,10 @@ class MyPanel2(wx.Panel):
         topSizer.Add(wx.StaticLine(self), 0, wx.ALL | wx.EXPAND, 5)
         topSizer.Add(inputOneSizer, 0, wx.ALL | wx.EXPAND, 5)
         topSizer.Add(inputTwoSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputThreeSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputFourSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputFiveSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputSixSizer, 0, wx.ALL | wx.EXPAND, 5)
         topSizer.Add(wx.StaticLine(self), 0, wx.ALL | wx.EXPAND, 5)
 
         self.SetSizer(topSizer)
@@ -742,8 +768,15 @@ class MyPanel2(wx.Panel):
         self.Raise()
         self.SetPosition((0, 0))
         self.Hide()
-
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
+        # value declarations
+        self.imp_dict = imp_dict
+        self.mct = 0
+        self.mtl = 0
+        self.mtr = 0
+        self.mc2bc = 0
+        self.mc2mlc = 0
+        self.mc2mrc = 0
 
     def OnEraseBackground(self, evt):
         dc = evt.GetDC()
@@ -778,38 +811,22 @@ class MyPanel2(wx.Panel):
     def closeProgram(self):
         self.Destroy()
 
-    def updateV(self, event):
-        """"""
-        global Im, t4
-        Im = random.uniform(100, 220)
-        txt = open('motor_current.txt', 'a')
-        txt.write(str(Im) + "," + str(t4) + "\n")
-        t4 += 1
-        if Im > 200:
-            self.labelOne.SetBackgroundColour('red')
-            self.labelOne.SetLabel('Motor Controller Current : ' + str(Im))
-
-        else:
-            self.labelOne.SetBackgroundColour('white')
-            self.labelOne.SetLabel('Motor Controller Current : ' + str(Im))
-
+    def updatemct(self, event):
+        """motor controller temperature"""
+        self.mct = self.imp_dict["mct"][len(self.imp_dict["mct"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('mct.txt', 'a')
+        txt.write(str(self.mct) + "," + t + "\n")
+        self.labelTwo.SetLabel('Motor Controller Temp. : ' + str(self.btq2) + ' C')
         self.Refresh()
 
-    def updateC(self, event):
+    def updatemtr(self, event):
         """"""
-        global Mv, t5
-        Mv = random.uniform(65, 72)
-        txt = open('motor_voltage.txt', 'a')
-        txt.write(str(Mv) + "," + str(t5) + "\n")
-        t5 += 1
-        if Mv > 69:
-            self.labelTwo.SetBackgroundColour('red')
-            self.labelTwo.SetLabel('Motor Voltage : ' + str(Mv))
-
-        else:
-            self.labelTwo.SetBackgroundColour('white')
-            self.labelTwo.SetLabel('Motor Voltage : ' + str(Mv))
-
+        self.mtr = self.imp_dict["mtr"][len(self.imp_dict["btq2"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('btq2.txt', 'a')
+        txt.write(str(self.btq2) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq2) + ' C')
         self.Refresh()
 
     def ShowYourself(self):
