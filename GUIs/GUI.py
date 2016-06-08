@@ -917,39 +917,50 @@ class MyPanel2(wx.Panel):
 class MyPanel3(wx.Panel):
     """General Panel class"""
 
-    def __init__(self, parent, id=-1):
+    def __init__(self,imp_dict, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         # timers
+        # 1
         self.timer1 = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.updateS, self.timer1)
-        self.timer1.Start(1000)
-
-        self.timery = wx.Timer(self)
-        self.timery.Start(1000)
-
-        self.timerz = wx.Timer(self)
-        self.timerz.Start(1000)
-
+        self.Bind(wx.EVT_TIMER, self.updatesoc, self.timer1)
+        self.timer1.Start(10)
+        # 2
         self.timer2 = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.updateA, self.timer2)
-        self.timer2.Start(1000)
-
+        self.Bind(wx.EVT_TIMER, self.updatespeedfl, self.timer2)
+        self.timer2.Start(10)
+        # 3
         self.timer3 = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.updateT, self.timer3)
-        self.timer3.Start(1000)
+        self.Bind(wx.EVT_TIMER, self.updatespeedfr, self.timer3)
+        self.timer3.Start(10)
+        # 4
+        self.timer4 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.updatespeedbl, self.timer4)
+        self.timer4.Start(10)
+        # 5
+        self.timer5 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.updatespeedbr, self.timer5)
+        self.timer5.Start(10)
+        # 6
+        self.timer6 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.updateoiltemp, self.timer6)
+        self.timer6.Start(10)
 
-        # labels, buttons etc
+        # title creator
         title = wx.StaticText(self, -1, 'General')
         title.SetFont(
             wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
-
+        # label declarations
         self.labelOne = wx.StaticText(self, -1)
-        self.labelOne.SetLabel('Car Speed : ')
+        self.labelOne.SetLabel('Car Speed (FR FL BR BL) : ')
         self.labelTwo = wx.StaticText(self, -1)
         self.labelTwo.SetLabel('Acceleration: ')
+        self.labelThree = wx.StaticText(self, -1)
+        self.labelThree.SetLabel('Ambient Temperature:')
+        self.labelThree = wx.StaticText(self, -1)
+        self.labelThree.SetLabel('Oil temperature:')
         self.labelThree = wx.StaticText(self, -1)
         self.labelThree.SetLabel('Ambient Temperature:')
 
