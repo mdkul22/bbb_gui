@@ -7,6 +7,7 @@ __author__ = "Mayunk Kulkarni"
 
 
 class My_App(wx.App):
+
     """"Additional arg added i.e the sensor_dict which will be pulled regularly"""
 
     def __init__(self, sensor_dict):
@@ -62,6 +63,7 @@ class MyFrame(wx.Frame):
 
 
 class MyPanel(wx.Panel):
+
     """Battery panel panel"""
 
     def __init__(self, imp_dict, parent, id=-1):
@@ -317,7 +319,7 @@ class MyPanel(wx.Panel):
 
     def updatetq1(self, event):
         """battery NE quadrant temperature"""
-        self.btq1 = self.imp_dict["btq1"][len(self.imp_dict["btq1"])-1]
+        self.btq1 = self.imp_dict["btq1"][len(self.imp_dict["btq1"]) - 1]
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('btq1.txt', 'a')
         txt.write(str(self.btq1) + "," + t + "\n")
@@ -353,7 +355,8 @@ class MyPanel(wx.Panel):
 
     def updatemaxdc(self, event):
         """max. discharge current"""
-        self.maxdisc = self.imp_dict["maxdiscC"][len(self.imp_dict["maxdiscC"]) - 1]
+        self.maxdisc = self.imp_dict["maxdiscC"][
+            len(self.imp_dict["maxdiscC"]) - 1]
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('maxdiscC.txt', 'a')
         txt.write(str(self.maxdisc) + "," + t + "\n")
@@ -362,7 +365,8 @@ class MyPanel(wx.Panel):
 
     def updatemindc(self, event):
         """min. discharge current"""
-        self.mindisc = self.imp_dict["mindiscC"][len(self.imp_dict["mindiscC"]) - 1]
+        self.mindisc = self.imp_dict["mindiscC"][
+            len(self.imp_dict["mindiscC"]) - 1]
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('mindiscC.txt', 'a')
         txt.write(str(self.mindisc) + "," + t + "\n")
@@ -399,9 +403,10 @@ class MyPanel(wx.Panel):
 
 
 class MyPanel1(wx.Panel):
+
     """MPPT panel class"""
 
-    def __init__(self,imp_dict, parent, id=-1):
+    def __init__(self, imp_dict, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
@@ -426,8 +431,10 @@ class MyPanel1(wx.Panel):
             wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
         # label declarations
-        self.labelOne = wx.StaticText(self, -1, 'Panels to MPPT : ' + str(self.sp2mppt))
-        self.labelTwo = wx.StaticText(self, -1, 'MPPT to Battery : ' + str(self.mppt2bat))
+        self.labelOne = wx.StaticText(
+            self, -1, 'Panels to MPPT : ' + str(self.sp2mppt))
+        self.labelTwo = wx.StaticText(
+            self, -1, 'MPPT to Battery : ' + str(self.mppt2bat))
         # label describers
         self.labelOne.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
@@ -565,16 +572,19 @@ class MyPanel1(wx.Panel):
 
     def updatemppt2bat(self, event):
         """MPPT to battery"""
-        self.mppt2bat = self.imp_dict["mppt2bat"][len(self.imp_dict["mppt2bat"]) - 1]
+        self.mppt2bat = self.imp_dict["mppt2bat"][
+            len(self.imp_dict["mppt2bat"]) - 1]
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('mppt2bat.txt', 'a')
         txt.write(str(self.mppt2bat) + "," + t + "\n")
-        self.labelOne.SetLabel('MPPT to Battery  : ' + str(self.mppt2bat) + ' A')
+        self.labelOne.SetLabel(
+            'MPPT to Battery  : ' + str(self.mppt2bat) + ' A')
         self.Refresh()
 
     def updatesp2mppt(self, event):
         """Solar Panels to MPPT"""
-        self.sp2mppt = self.imp_dict["sp2mppt"][len(self.imp_dict["mppt2bat"]) - 1]
+        self.sp2mppt = self.imp_dict["sp2mppt"][
+            len(self.imp_dict["mppt2bat"]) - 1]
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('sp2mppt.txt', 'a')
         txt.write(str(self.sp2mppt) + "," + t + "\n")
@@ -602,9 +612,10 @@ class MyPanel1(wx.Panel):
 
 
 class MyPanel2(wx.Panel):
+
     """Motor controller panel"""
 
-   def __init__(self, imp_dict, parent, id=-1):
+    def __init__(self, imp_dict, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
@@ -792,21 +803,39 @@ class MyPanel2(wx.Panel):
         dc.DrawBitmap(bmp, 0, 0)
 
     def MotorWarn(self, event):
-        if (self.GetParent().panel2.IsShown()):
-            self.wbutton2.SetBackgroundColour('white')
-            if Mv > 71:
+        """warner for all six values"""
+        if self.GetParent().panel0.IsShown():
+            self.wbutton1.SetBackgroundColour('white')
+            if self.mct > 45:
                 self.labelOne.SetForegroundColour('red')
             else:
                 self.labelOne.SetForegroundColour('white')
-            if Im > 200:
+            if self.mtl > 65:
                 self.labelTwo.SetForegroundColour('red')
             else:
                 self.labelTwo.SetForegroundColour('white')
-        elif Mv > 71 or Im > 200:
-            self.wbutton2.SetBackgroundColour('red')
-            self.GetParent().panel0.wbutton2.SetBackgroundColour('red')
-            self.GetParent().panel1.wbutton2.SetBackgroundColour('red')
-            self.GetParent().panel3.wbutton2.SetBackgroundColour('red')
+            if self.mtr > 65:
+                self.labelThree.SetForegroundColour('red')
+            else:
+                self.labelThree.SetForegroundColour('white')
+            if self.mc2mlc > 350:
+                self.labelFour.SetForegroundColour('red')
+            else:
+                self.labelFour.SetForegroundColour('white')
+            if self.mc2mrc > 350:
+                self.labelFive.SetForegroundColour('red')
+            else:
+                self.labelFive.SetForegroundColour('white')
+            if self.mc2bc < 250:
+                self.labelSix.SetForegroundColour('red')
+            else:
+                self.labelSix.SetForegroundColour('white')
+
+        elif self.mct > 45 or (self.mtl, self.mtr) > 65 or (self.mc2mrc, self.mc2mlc) > 350 or self.mc2bc > 250:
+            self.wbutton1.SetBackgroundColour('red')
+            self.GetParent().panel1.wbutton1.SetBackgroundColour('red')
+            self.GetParent().panel2.wbutton1.SetBackgroundColour('red')
+            self.GetParent().panel3.wbutton1.SetBackgroundColour('red')
 
     def closeProgram(self):
         self.Destroy()
@@ -817,16 +846,52 @@ class MyPanel2(wx.Panel):
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
         txt = open('mct.txt', 'a')
         txt.write(str(self.mct) + "," + t + "\n")
-        self.labelTwo.SetLabel('Motor Controller Temp. : ' + str(self.btq2) + ' C')
+        self.labelOne.SetLabel('Motor Controller Temp. : ' + str(self.btq2) + ' C')
         self.Refresh()
 
     def updatemtr(self, event):
-        """"""
-        self.mtr = self.imp_dict["mtr"][len(self.imp_dict["mtr"]) - 1]
+        """left motor temperature"""
+        self.mtr = self.imp_dict["mtl"][len(self.imp_dict["mtl"]) - 1]
         t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
-        txt = open('btq2.txt', 'a')
-        txt.write(str(self.btq2) + "," + t + "\n")
-        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq2) + ' C')
+        txt = open('mtl.txt', 'a')
+        txt.write(str(self.mtl) + "," + t + "\n")
+        self.labelThree.SetLabel('Motor(R) Temp. : ' + str(self.mtl) + ' C')
+        self.Refresh()
+
+    def updatemc2mlc(self, event):
+        """motor controller to left motor current"""
+        self.mtr = self.imp_dict["mc2mlc"][len(self.imp_dict["mc2mlc"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('mc2mlc.txt', 'a')
+        txt.write(str(self.mc2mlc) + "," + t + "\n")
+        self.labelFour.SetLabel('MC to Motor(L) : ' + str(self.mc2mlc) + ' A')
+        self.Refresh()
+
+    def updatemtl(self, event):
+        """left motor temperature"""
+        self.mtl = self.imp_dict["mtl"][len(self.imp_dict["mtl"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('mtl.txt', 'a')
+        txt.write(str(self.mtl) + "," + t + "\n")
+        self.labelThree.SetLabel('Motor(L) Temp. : ' + str(self.mtr) + ' C')
+        self.Refresh()
+
+    def updatemc2mrc(self, event):
+        """Motor controller to Motor(R)"""
+        self.mc2mrc = self.imp_dict["mc2mrc"][len(self.imp_dict["mc2mrc"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('mc2mrc.txt', 'a')
+        txt.write(str(self.mc2mrc) + "," + t + "\n")
+        self.labelFive.SetLabel('MC to Motor(R) : ' + str(self.mc2mrc) + ' A')
+        self.Refresh()
+
+    def updatemc2bc(self, event):
+        """motor controller to BMS"""
+        self.mc2bc = self.imp_dict["mc2bc"][len(self.imp_dict["mc2bc"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('mc2bc.txt', 'a')
+        txt.write(str(self.mc2bc) + "," + t + "\n")
+        self.labelSix.SetLabel('MC to BMS : ' + str(self.mc2bc) + ' A')
         self.Refresh()
 
     def ShowYourself(self):
@@ -850,9 +915,7 @@ class MyPanel2(wx.Panel):
 
 
 class MyPanel3(wx.Panel):
-
-    """"""
-    # ----------------------------------------------------------------------
+    """General Panel class"""
 
     def __init__(self, parent, id=-1):
         """Constructor"""
@@ -882,6 +945,7 @@ class MyPanel3(wx.Panel):
         title.SetFont(
             wx.Font(24, wx.FONTFAMILY_DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
         title.SetForegroundColour('white')
+
         self.labelOne = wx.StaticText(self, -1)
         self.labelOne.SetLabel('Car Speed : ')
         self.labelTwo = wx.StaticText(self, -1)
