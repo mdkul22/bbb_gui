@@ -3,9 +3,6 @@ import itertools
 from randval import randgen
 # import serial
 
-# ser = serial.Serial(port='dev/ttyACM0', baudrate=9600, timeout=1)
-
-
 class Logger():
 
     """this class works as a data handler, inputs csv files, also
@@ -21,6 +18,8 @@ class Logger():
             'sp2mppt': [], 'mppt2bat': [], 'oiltemp' : [], 'junk' : []
         }
         self.sensor_names = self.sensor_val.keys()
+
+        # ser = serial.Serial(port='dev/ttyACM0', baudrate=9600, timeout=1)
 
     def readr(self):
         # x = ser.read()
