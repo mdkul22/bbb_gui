@@ -2,19 +2,16 @@ import wx
 import sys
 import random
 from datetime import datetime
-
+from threading import Rlock, Thread
+sys.append.path("..")
+from py2uart import Logger
 __author__ = "Mayunk Kulkarni"
 
 
 class My_App(wx.App):
 
-    """"Additional arg added i.e the sensor_dict which will be pulled regularly"""
-
-    def __init__(self, sensor_dict):
-        self.imp_dict = sensor_dict
-
     def OnInit(self):
-        self.frame = MyFrame(None, self.imp_dict)
+        self.frame = MyFrame(None)
         self.frame.Show()
         self.SetTopWindow(self.frame)
         return True
@@ -28,16 +25,17 @@ class My_App(wx.App):
 
 class MyFrame(wx.Frame):
 
-    """"""
+    """initializing threads and locks"""
 
-    def __init__(self, sensor_dict, image, parent=None, id=-1,
+    def __init__(self, image, parent=None, id=-1,
                  title='Generic Title', pos=wx.DefaultPosition):
 
         size = (800, 480)
         wx.Frame.__init__(self, parent, id, 'GUI', pos, size)
 
         self.sizer_h = wx.BoxSizer(wx.HORIZONTAL)
-
+        log = Logger()
+        self.imp_dict = log.checkr(log.readr())
         self.panel0 = MyPanel(self, sensor_dict)
         self.sizer_h.Add(self.panel0, 1, wx.EXPAND)
 
@@ -55,6 +53,15 @@ class MyFrame(wx.Frame):
         self.panel1.Hide()
         self.panel2.Hide()
         self.panel3.ShowYourself()
+
+    def serial_reading_function():
+        while True:
+            try:
+                self.lock.acquire()
+                sensor_dict = self.
+
+            finally:
+                lock.release()
 
     def ShutDown(self):
         self.Destroy()
