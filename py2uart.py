@@ -18,7 +18,6 @@ class Logger():
             'sp2mppt': [], 'mppt2bat': [], 'oiltemp' : [], 'junk' : []
         }
         self.sensor_names = self.sensor_val.keys()
-        self
         # ser = serial.Serial(port='dev/ttyACM0', baudrate=9600, timeout=1)
 
     def readr(self):

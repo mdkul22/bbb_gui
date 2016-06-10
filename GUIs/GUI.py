@@ -13,15 +13,14 @@ mcdict = {}
 gendict = {}
 batdict = {}
 lock = RLock()
-
+log = Logger()
 def serial_reading_function():
     while True:
         try:
             lock.acquire()
-            v = log.checkr(log.readr())
+            log.checkr(log.readr())
         finally:
             lock.release()
-            return v
 
 
 class My_App(wx.App):
@@ -285,9 +284,9 @@ class MyPanel(wx.Panel):
         self.maxc = 0
 
     def DictUpdater(self, event):
+        self.imp_dict = log.return_bat()
 
-
-    def OnEraseBackground(self, event):
+    def OnEraseBackground(self, evt):
         dc = evt.GetDC()
 
         if not dc:
@@ -435,19 +434,23 @@ class MyPanel1(wx.Panel):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
+        # dictionary update
+        self.mpptupdater = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.DictUpdater, self.mpptupdater)
+        self.mpptupdater.Start(100)
         # warning timer
         self.timerx = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.MPPTWarn, self.timerx)
-        self.timerx.Start(100)
+        self.timerx.Start(10)
         # label updater
         # 1
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.updatemppt2bat(), self.timer1)
-        self.timer1.Start(100)
+        self.timer1.Start(10)
         # 2
         self.timer1 = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.updatesp2mppt(), self.timer2)
-        self.timer2.Start(100)
+        self.timer2.Start(10)
         # dictionary of lists
 
         # buttons and labels
@@ -554,6 +557,9 @@ class MyPanel1(wx.Panel):
         self.Hide()
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
 
+    def DictUpdater(self, event):
+        self.imp_dict = log.return_mppt()
+
     def OnEraseBackground(self, evt):
         dc = evt.GetDC()
 
@@ -644,6 +650,9 @@ class MyPanel2(wx.Panel):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
+        # timer for updating dictionary
+        self.mcupdater = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.DictUpdater, self.mcupdater)
         # timer for warning
         self.timerx = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.MotorWarn, self.timerx)
@@ -814,6 +823,9 @@ class MyPanel2(wx.Panel):
         self.mc2mlc = 0
         self.mc2mrc = 0
 
+    def DictUpdater(self, event):
+        self.imp_dict = log.return_mc()
+
     def OnEraseBackground(self, evt):
         dc = evt.GetDC()
 
@@ -946,6 +958,9 @@ class MyPanel3(wx.Panel):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
+        # timer for updating dictionary
+        self.genupdater = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.genupdater, self.genupdater)
         # timers
         # 1
         self.timer1 = wx.Timer(self)
@@ -979,26 +994,32 @@ class MyPanel3(wx.Panel):
         title.SetForegroundColour('white')
         # label declarations
         self.labelOne = wx.StaticText(self, -1)
-        self.labelOne.SetLabel('Car Speed (FR FL BR BL) : ')
+        self.labelOne.SetLabel('Car Speed (FR FL) : ')
         self.labelTwo = wx.StaticText(self, -1)
-        self.labelTwo.SetLabel('Acceleration: ')
+        self.labelTwo.SetLabel('Car speed (BR BL) : ')
         self.labelThree = wx.StaticText(self, -1)
-        self.labelThree.SetLabel('Ambient Temperature:')
-        self.labelThree = wx.StaticText(self, -1)
-        self.labelThree.SetLabel('Oil temperature:')
-        self.labelThree = wx.StaticText(self, -1)
-        self.labelThree.SetLabel('Ambient Temperature:')
-
+        self.labelThree.SetLabel('Ambient Temperature :')
+        self.labelFour = wx.StaticText(self, -1)
+        self.labelFour.SetLabel('Oil temperature : ')
+        self.labelFive = wx.StaticText(self, -1)
+        self.labelFive.SetLabel('State of Charge : ')
+        # label describers
         self.labelOne.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelOne.SetForegroundColour('white')
         self.labelTwo.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelTwo.SetForegroundColour('white')
         self.labelThree.SetFont(
             wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
-        self.labelOne.SetForegroundColour('white')
-        self.labelTwo.SetForegroundColour('white')
         self.labelThree.SetForegroundColour('white')
-
+        self.labelFour.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelFour.SetForegroundColour('white')
+        self.labelFive.SetFont(
+            wx.Font(20, wx.FONTFAMILY_DECORATIVE, wx.BOLD, wx.FONTWEIGHT_BOLD))
+        self.labelFive.SetForegroundColour('white')
+        # image buttons
         self.wbutton0 = wx.Button(
             self, -1, '-            M P P T               -')
         self.wbutton1 = wx.Button(
@@ -1052,6 +1073,8 @@ class MyPanel3(wx.Panel):
         inputOneSizer = wx.BoxSizer(wx.HORIZONTAL)
         inputTwoSizer = wx.BoxSizer(wx.HORIZONTAL)
         inputThreeSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputFourSizer = wx.BoxSizer(wx.HORIZONTAL)
+        inputFiveSizer = wx.BoxSizer(wx.HORIZONTAL)
 
         toolBtn.Add(MPPTBtn, 0, wx.ALL, 5)
         toolBtn.Add(BatteryBtn, 0, wx.ALL, 5)
@@ -1067,12 +1090,11 @@ class MyPanel3(wx.Panel):
         warnSizer_h.Add(warnSizer, 0, wx.CENTER, 5)
 
         titleSizer.Add(title, 0, wx.ALL, 5)
-
         inputOneSizer.Add(self.labelOne, 0, wx.ALL, 5)
-
         inputTwoSizer.Add(self.labelTwo, 0, wx.ALL, 5)
-
         inputThreeSizer.Add(self.labelThree, 0, wx.ALL, 5)
+        inputFourSizer.Add(self.labelFour, 0, wx.ALL, 5)
+        inputFiveSizer.Add(self.labelFive, 0, wx.ALL, 5)
 
         topSizer.Add(toolBtn_h, 0, wx.ALL | wx.EXPAND | wx.CENTER, 5)
         topSizer.Add(warnSizer_h, 0, wx.ALL | wx.EXPAND | wx.CENTER, 5)
@@ -1082,16 +1104,26 @@ class MyPanel3(wx.Panel):
         topSizer.Add(inputOneSizer, 0, wx.ALL | wx.EXPAND, 5)
         topSizer.Add(inputTwoSizer, 0, wx.ALL | wx.EXPAND, 5)
         topSizer.Add(inputThreeSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputFourSizer, 0, wx.ALL | wx.EXPAND, 5)
+        topSizer.Add(inputFiveSizer, 0, wx.ALL | wx.EXPAND, 5)
         topSizer.Add(wx.StaticLine(self), 0, wx.ALL | wx.EXPAND, 5)
 
         self.SetSizer(topSizer)
         topSizer.Fit(self)
-
         self.Raise()
         self.SetPosition((0, 0))
         self.Hide()
-
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
+        # value declarations
+        self.speedfl = 0
+        self.speedfr = 0
+        self.speedbr = 0
+        self.speedbl = 0
+        self.oiltemp = 0
+        self.soc = 0
+
+    def DictUpdater(self, event):
+        self.imp_dict = log.return_general()
 
     def OnEraseBackground(self, evt):
         dc = evt.GetDC()
@@ -1106,17 +1138,51 @@ class MyPanel3(wx.Panel):
         bmp = wx.BitmapFromImage(start_image1)
         dc.DrawBitmap(bmp, 0, 0)
 
-    def updateS(self, event):
-        v = 0
-        self.labelOne.SetLabel('Car Speed : ' + str(v))
+    def updatetq1(self, event):
+        """battery NE quadrant temperature"""
+        self.btq1 = self.imp_dict["btq1"][len(self.imp_dict["btq1"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('btq1.txt', 'a')
+        txt.write(str(self.btq1) + "," + t + "\n")
+        self.labelOne.SetLabel('Temperature  : ' + str(self.btq1) + ' C')
+        self.Refresh()
 
-    def updateA(self, event):
-        a = 0
-        self.labelTwo.SetLabel('Acceleration : ' + str(a))
+    def update(self, event):
+        """battery NW quadrant temperature"""
+        self.btq2 = self.imp_dict["btq2"][len(self.imp_dict["btq2"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('btq2.txt', 'a')
+        txt.write(str(self.btq2) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq2) + ' C')
+        self.Refresh()
 
-    def updateT(self, event):
-        t = random.uniform(28, 30)
-        self.labelThree.SetLabel('Ambient Temperature : ' + str(t))
+    def updatetq3(self, event):
+        """battery SE quadrant temperature"""
+        self.btq3 = self.imp_dict["btq3"][len(self.imp_dict["btq3"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('btq3.txt', 'a')
+        txt.write(str(self.btq3) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq3) + ' C')
+        self.Refresh()
+
+    def updatetq4(self, event):
+        """battery SW quadrant temperature"""
+        self.btq4 = self.imp_dict["btq4"][len(self.imp_dict["btq4"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('btq4.txt', 'a')
+        txt.write(str(self.btq4) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.btq4) + ' C')
+        self.Refresh()
+
+    def updatemaxdc(self, event):
+        """max. discharge current"""
+        self.maxdisc = self.imp_dict["maxdiscC"][
+            len(self.imp_dict["maxdiscC"]) - 1]
+        t = datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y")
+        txt = open('maxdiscC.txt', 'a')
+        txt.write(str(self.maxdisc) + "," + t + "\n")
+        self.labelTwo.SetLabel('Battery Current : ' + str(self.maxdisc) + ' A')
+        self.Refresh()
 
     def closeProgram(self):
         self.Destroy()
