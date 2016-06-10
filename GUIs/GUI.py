@@ -2,10 +2,26 @@ import wx
 import sys
 import random
 from datetime import datetime
-from threading import Rlock, Thread
+from threading import RLock, Thread
 sys.append.path("..")
 from py2uart import Logger
 __author__ = "Mayunk Kulkarni"
+global sensor_val, log, mpptdict, mcdict, gendict, batdict, thread, lock
+sensor_val = {}
+mpptdict = {}
+mcdict = {}
+gendict = {}
+batdict = {}
+lock = RLock()
+
+def serial_reading_function():
+    while True:
+        try:
+            lock.acquire()
+            v = log.checkr(log.readr())
+        finally:
+            lock.release()
+            return v
 
 
 class My_App(wx.App):
@@ -35,17 +51,21 @@ class MyFrame(wx.Frame):
 
         self.sizer_h = wx.BoxSizer(wx.HORIZONTAL)
         log = Logger()
+        # thread
+        thread = Thread(target=serial_reading_function())
+        thread.start()
+
         self.imp_dict = log.checkr(log.readr())
-        self.panel0 = MyPanel(self, sensor_dict)
+        self.panel0 = MyPanel(self)
         self.sizer_h.Add(self.panel0, 1, wx.EXPAND)
 
-        self.panel1 = MyPanel1(self, sensor_dict)
+        self.panel1 = MyPanel1(self)
         self.sizer_h.Add(self.panel1, 1, wx.EXPAND)
 
-        self.panel2 = MyPanel2(self, sensor_dict)
+        self.panel2 = MyPanel2(self)
         self.sizer_h.Add(self.panel2, 1, wx.EXPAND)
 
-        self.panel3 = MyPanel3(self, sensor_dict)
+        self.panel3 = MyPanel3(self)
         self.sizer_h.Add(self.panel3, 1, wx.EXPAND)
 
         self.SetSizer(self.sizer_h)
@@ -53,15 +73,6 @@ class MyFrame(wx.Frame):
         self.panel1.Hide()
         self.panel2.Hide()
         self.panel3.ShowYourself()
-
-    def serial_reading_function():
-        while True:
-            try:
-                self.lock.acquire()
-                sensor_dict = self.
-
-            finally:
-                lock.release()
 
     def ShutDown(self):
         self.Destroy()
@@ -73,10 +84,14 @@ class MyPanel(wx.Panel):
 
     """Battery panel panel"""
 
-    def __init__(self, imp_dict, parent, id=-1):
+    def __init__(self, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
+        # dictionary update
+        self.batupdater = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.DictUpdater, self.batupdater)
+        self.batupdater.Start(100)
         # warning timer
         self.timerx = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.BatteryWarn, self.timerx)
@@ -111,7 +126,7 @@ class MyPanel(wx.Panel):
         self.Bind(wx.EVT_TIMER, self.updatemaxc, self.timer7)
         self.timer7.Start(10)
         # dictionary of lists
-        self.imp_dict = imp_dict
+        self.imp_dict = {}
         # title
         title = wx.StaticText(self, -1, 'Battery')
         title.SetFont(wx.Font(24, wx.DEFAULT, wx.BOLD, wx.FONTWEIGHT_BOLD))
@@ -260,7 +275,7 @@ class MyPanel(wx.Panel):
         self.SetPosition((0, 0))
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
         # value declarations
-        self.imp_dict = imp_dict
+
         self.btq1 = 0
         self.btq2 = 0
         self.btq3 = 0
@@ -269,7 +284,10 @@ class MyPanel(wx.Panel):
         self.mindisc = 0
         self.maxc = 0
 
-    def OnEraseBackground(self, evt):
+    def DictUpdater(self, event):
+
+
+    def OnEraseBackground(self, event):
         dc = evt.GetDC()
 
         if not dc:
@@ -413,7 +431,7 @@ class MyPanel1(wx.Panel):
 
     """MPPT panel class"""
 
-    def __init__(self, imp_dict, parent, id=-1):
+    def __init__(self, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
@@ -431,7 +449,7 @@ class MyPanel1(wx.Panel):
         self.Bind(wx.EVT_TIMER, self.updatesp2mppt(), self.timer2)
         self.timer2.Start(100)
         # dictionary of lists
-        self.imp_dict = imp_dict
+
         # buttons and labels
         title = wx.StaticText(self, -1, 'MPPT')
         title.SetFont(
@@ -622,7 +640,7 @@ class MyPanel2(wx.Panel):
 
     """Motor controller panel"""
 
-    def __init__(self, imp_dict, parent, id=-1):
+    def __init__(self, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
@@ -788,7 +806,7 @@ class MyPanel2(wx.Panel):
         self.Hide()
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
         # value declarations
-        self.imp_dict = imp_dict
+
         self.mct = 0
         self.mtl = 0
         self.mtr = 0
@@ -924,7 +942,7 @@ class MyPanel2(wx.Panel):
 class MyPanel3(wx.Panel):
     """General Panel class"""
 
-    def __init__(self,imp_dict, parent, id=-1):
+    def __init__(self, parent, id=-1):
         """Constructor"""
         wx.Panel.__init__(self, parent, id, size=(800, 480))
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)

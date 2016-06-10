@@ -18,7 +18,7 @@ class Logger():
             'sp2mppt': [], 'mppt2bat': [], 'oiltemp' : [], 'junk' : []
         }
         self.sensor_names = self.sensor_val.keys()
-
+        self
         # ser = serial.Serial(port='dev/ttyACM0', baudrate=9600, timeout=1)
 
     def readr(self):
@@ -106,7 +106,24 @@ class Logger():
             writer.writerow(d.keys())
             writer.writerows(itertools.izip_longest(*d.values()))
 
+    def return_bat(self):
+        bat_dict = {k: self.sensor_val[k] for k in ('btq1', 'btq2', 'btq3', 'btq4',
+                                                    'maxdiscC', 'maxc', 'mindiscC')}
+        return bat_dict
 
+    def return_mc(self):
+        mc_dict = {k: self.sensor_val[k] for k in ('mtl', 'mtr', 'mct', 'mc2mrc',
+                                                    'mc2mlc', 'mc2bc', 'mindiscC')}
+        return mc_dict
+
+    def return_mppt(self):
+        mppt_dict = {k: self.sensor_val[k] for k in ('sp2mppt', 'mppt2bat')}
+        return mppt_dict
+
+    def return_general(self):
+        gen_dict = {k: self.sensor_val[k] for k in ('speedfl', 'speedfr', 'speedbl', 'speedbr',
+                                                    'oiltemp', 'soc')}
+        return gen_dict
 if __name__ == "__main__":
     x = Logger()
     for y in range(0, 100):
