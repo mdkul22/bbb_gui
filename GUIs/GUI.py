@@ -985,7 +985,7 @@ class MyPanel3(wx.Panel):
         # 6
         self.timer6 = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.updateoiltemp, self.timer6)
-        self.timer6.Start(10)
+        self.timer6.Start(9)
 
         # title creator
         title = wx.StaticText(self, -1, 'General')
