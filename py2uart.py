@@ -3,31 +3,32 @@ import itertools
 from randval import randgen
 # import serial
 
-# ser = serial.Serial(port='dev/ttyACM0', baudrate=9600, timeout=1)
-
-
 class Logger():
 
-    """this class works as a data handler """
+    """this class works as a data handler, inputs csv files, also
+       acts as a warner by checking values and provides proper data
+       the GUI"""
 
     def __init__(self):
         self.sensor_val = {
             'btq1': [], 'btq2': [], 'btq3': [], 'btq4': [], 'mtl': [], 'mtr': [], 'mct': [],
             'mc2mrc': [], 'mc2mlc': [], 'mc2bc': [],
             'soc': [], 'maxdiscC': [], 'maxc': [], 'mindiscC': [],
-            'speedfl': [], 'speedfr': [], 'speedbr': [], 'speedbl': []
+            'speedfl': [], 'speedfr': [], 'speedbr': [], 'speedbl': [],
+            'sp2mppt': [], 'mppt2bat': [], 'oiltemp' : [], 'junk' : []
         }
         self.sensor_names = self.sensor_val.keys()
+        # ser = serial.Serial(port='dev/ttyACM0', baudrate=9600, timeout=1)
 
     def readr(self):
         # x = ser.read()
-        x = randgen()
+        x1 = randgen()
 
-        if x == '':
+        if x1 == '':
             return 'x'
 
         else:
-            return x
+            return x1
 
     def checkr(self, value):
         if value[0] == 'a':
@@ -81,8 +82,20 @@ class Logger():
         elif value[0] == 'q':
             self.sensor_val['speedbr'].append(value[1:])
 
-        else:
+        elif value[0] == 'r':
             self.sensor_val['speedbl'].append(value[1:])
+
+        elif value[0] == 's':
+            self.sensor_val['sp2mppt'].append(value[1:])
+
+        elif value[0] == 't':
+            self.sensor_val['mppt2bat'].append(value[1:])
+
+        elif value[0] == 'u':
+            self.sensor_val['oiltemp'].append(value[1:])
+
+        else:
+            self.sensor_val['junk'].append(value)
 
     def save_list_in_csv(self):
 
@@ -92,9 +105,27 @@ class Logger():
             writer.writerow(d.keys())
             writer.writerows(itertools.izip_longest(*d.values()))
 
+    def return_bat(self):
+        bat_dict = {k: self.sensor_val[k] for k in ('btq1', 'btq2', 'btq3', 'btq4',
+                                                    'maxdiscC', 'maxc', 'mindiscC')}
+        return bat_dict
+
+    def return_mc(self):
+        mc_dict = {k: self.sensor_val[k] for k in ('mtl', 'mtr', 'mct', 'mc2mrc',
+                                                    'mc2mlc', 'mc2bc', 'mindiscC')}
+        return mc_dict
+
+    def return_mppt(self):
+        mppt_dict = {k: self.sensor_val[k] for k in ('sp2mppt', 'mppt2bat')}
+        return mppt_dict
+
+    def return_general(self):
+        gen_dict = {k: self.sensor_val[k] for k in ('speedfl', 'speedfr', 'speedbl', 'speedbr',
+                                                    'oiltemp', 'soc')}
+        return gen_dict
 if __name__ == "__main__":
     x = Logger()
-    for y in range(0, 90):
+    for y in range(0, 100):
         x.checkr(x.readr())
     for key, val in x.sensor_val.items():
         print key, "=>", val
